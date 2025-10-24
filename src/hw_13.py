@@ -24,15 +24,26 @@ def fare_per_passenger_by_class(df):
 
 
 def get_file_scv(filename: str) -> pd.DataFrame:
-    df = pd.read_csv(filename)
-    return df
+    result_df = pd.read_csv(filename)
+    return result_df
 
-def get_filter_sort_df(df: DataFrame) -> pd.DataFrame:
-    new_df = df[(df['Age'] < 30) & (df['Age'] < 30)].sort_values('PassengerId')
-    return new_df
+def get_filter_sort_df(df: DataFrame, age_p: int, fare_p: float) -> pd.DataFrame:
+    result_df = df[(df.Fare < fare_p) & (df.Age < age_p)]
+    result_df.sort_values('Name', inplace=True)
+    return result_df
+
+
+def get_passenger_class_fare(df: DataFrame) -> json:
+    new_pclass = df.groupby('Pclass')
+    new_fare = df.groupby('Pclass')['Fare'].mean()
+    new_passenger_count = df.groupby('Pclass')['PassengerId'].count()
+    result_dict = {f"{new_pclass}st": {"average_ticket_price": new_fare, "passenger_count": new_passenger_count}}
+    return result_dict
+
 
 df_titanic = get_file_scv('..\\data\\titanic.csv')
 print(get_file_scv('..\\data\\titanic.csv').head())
 print(avg_age_by_gender(df_titanic))
-print(get_filter_sort_df(df_titanic))
+print(get_filter_sort_df(df_titanic, 30, 50.0).head())
+print(get_passenger_class_fare(df_titanic))
 
