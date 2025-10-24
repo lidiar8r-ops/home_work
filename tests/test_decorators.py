@@ -29,7 +29,7 @@ def test_log_error():
         my_function_delete(1, 0)
 
 
-name_file = r"log\mylog.txt"
+name_file = r"logs\mylog.txt"
 
 
 @log(filename=name_file)
@@ -43,14 +43,14 @@ def test_log_error_file():
 
 
 def test_log_ok_file():
-    name_file_n = r"log\mylog.txt"
+    name_file_n = r"logs\mylog.txt"
 
     @log(filename=name_file_n)
     def my_function_test(x, y):
         return x / y
 
     my_function_test(1, 2)
-    with open(r"log\mylog.txt", "r", encoding="utf-8") as f:
+    with open(r"logs\mylog.txt", "r", encoding="utf-8") as f:
         text_file = f.read()
     assert "my_function_test ok" in text_file
 
