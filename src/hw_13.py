@@ -1,7 +1,6 @@
 from importlib.metadata import pass_none
 import json
 import pandas as pd
-from pandas.core.interchange.dataframe_protocol import DataFrame
 
 
 def avg_age_by_gender(df):
@@ -29,36 +28,37 @@ def get_file_scv(filename: str) -> pd.DataFrame:
     return result_df
 
 
-def get_filter_sort_df(df: DataFrame, age_p: int, fare_p: float) -> pd.DataFrame:
+def get_filter_sort_df(df: pd.DataFrame, age_p: int, fare_p: float) -> pd.DataFrame:
     result_df = df.loc[(df["Fare"] < fare_p) & (df["Age"] < age_p)]
     result_df.sort_values("Name")
     # result_df.sort_values("Name", inplace=True)
     return result_df
 
 
-def get_passenger_class_fare(df: DataFrame) -> json:
+def get_passenger_class_fare(df: pd.DataFrame) -> json:
     groupby_pass = df.groupby("Pclass").agg({"Fare": "mean", "PassengerId": "count"})
 
     dict_date = groupby_pass.to_dict(orient="records")
     dict_result = dict()
 
-    print("-----------------")
+    # print("-----------------")
     for index, values in enumerate(dict_date):
         dict_result[f"{index+1}st"] = {
             "average_ticket_price": round(values["Fare"], 2),
             "passenger_count": values["PassengerId"],
         }
 
-    return json.dump(dict_result, indent=4)
+    return json.dumps(dict_result, indent=4)
 
 
-def get_passenger_survived(df: DataFrame) -> json:
+def get_passenger_survived(df: pd.DataFrame) -> int:
     passenger_survived = df.loc[(df.Survived == 1)]
-    print(passenger_survived)
+    passenger_survived.to_json("..\\data\\passenger_survived.json", orient="records", indent=4, lines=False)
+    # with open("..\\data\\passenger_survived1.json", 'w') as f:
+    #     json.dump(passenger_survived.to_dict(orient="records"), f, indent=4, ensure_ascii=False)
 
-    with open("..\\data\\passenger_survived.json", 'w', encoding='utf-8') as f:
-        json.dump(f, passenger_survived)
-    return json.dumps(passenger_survived, indent=4)
+    return passenger_survived.PassengerId.count()
+
 
 
 df_titanic = get_file_scv("..\\data\\titanic.csv")
