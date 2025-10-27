@@ -1,6 +1,7 @@
 from importlib.metadata import pass_none
 import json
 import pandas as pd
+import re
 
 
 def avg_age_by_gender(df):
@@ -68,3 +69,20 @@ print(get_filter_sort_df(df_titanic, 30, 50.0).head())
 print(get_passenger_class_fare(df_titanic))
 
 print(get_passenger_survived(df_titanic))
+
+
+########################  13_2
+
+# Примеры из лекций
+# Компиляция регулярного выражения
+pattern = re.compile(r'\d+')
+
+# Поиск всех чисел в строке
+text = 'There are 2 apples and 5 bananas'
+matches = pattern.finditer(text)
+
+for match in matches:
+    print(match)
+
+
+    
